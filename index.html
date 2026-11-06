@@ -1,0 +1,247 @@
+<title>Annuity Income Estimator</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: single centered column; headline, one form with every question, Calculate, then results + lead form below. */
+:root{
+  --bg:#f6f8f8;
+  --surface:#ffffff;
+  --fg:#17242a;
+  --muted:#5b6b72;
+  --line:#d8e0e2;
+  --accent:#0a7c7e;
+  --accent-ink:#ffffff;
+  --accent-soft:#e3f2f1;
+  --gold:#b07a1c;
+  --gold-soft:#fbf3e3;
+  --green:#1e8a4c;
+  --green-soft:#e6f4ec;
+  --display:Georgia,'Iowan Old Style','Palatino Linotype','Times New Roman',serif;
+  --body:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#101a1d;--surface:#172428;--fg:#e8eef0;--muted:#9fb0b6;--line:#2a3a40;
+    --accent:#3fb7b8;--accent-ink:#0b1a1b;--accent-soft:#163538;--gold:#e0b25a;--gold-soft:#2f2714;--green:#4ccc80;--green-soft:#15301f;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#101a1d;--surface:#172428;--fg:#e8eef0;--muted:#9fb0b6;--line:#2a3a40;
+  --accent:#3fb7b8;--accent-ink:#0b1a1b;--accent-soft:#163538;--gold:#e0b25a;--gold-soft:#2f2714;--green:#4ccc80;--green-soft:#15301f;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:12px 40px}
+.wrap{max-width:560px;margin:0 auto;display:grid;gap:14px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px 16px;min-width:0}
+@media (min-width:600px){.card{padding:26px 22px}}
+.eyebrow{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;margin:0 0 6px}
+h1,h2{font-family:var(--display);font-weight:600;line-height:1.15;margin:0 0 8px;text-wrap:balance}
+h1{font-size:clamp(22px,5.6vw,34px);margin-bottom:6px}
+h2{font-size:clamp(22px,5vw,28px)}
+.lead{color:var(--muted);margin:0 0 14px;font-size:14px}
+.lead.intro{display:none}
+@media (min-width:600px){.lead.intro{display:block}}
+form.q{display:grid;gap:12px}
+label{display:grid;gap:4px;font-size:13px;font-weight:600}
+label small{color:var(--muted);font-weight:400}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+select,input{font:inherit;font-size:16px;font-weight:400;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px;width:100%;min-height:44px}
+select:focus,input:focus{outline:2px solid var(--accent);outline-offset:1px}
+.cta:focus-visible,.ghost:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.money{position:relative}
+.money span{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);font-weight:600}
+.money input{padding-left:28px;font-variant-numeric:tabular-nums;font-size:18px;font-weight:600}
+.cta{font:inherit;font-weight:700;background:var(--accent);color:var(--accent-ink);border:0;border-radius:8px;padding:14px 18px;width:100%;cursor:pointer;font-size:17px;margin-top:2px}
+.ghost{font:inherit;background:none;border:0;color:var(--muted);cursor:pointer;padding:12px 6px;font-weight:600}
+.err{color:#b4302e;font-size:13px;margin:0}
+:root[data-theme="dark"] .err{color:#f09a98}
+
+/* Results */
+#results[hidden]{display:none}
+.hero{background:var(--green-soft);border-radius:10px;padding:18px;text-align:center;margin:0 0 18px}
+.hero .amt{font-family:var(--display);font-size:clamp(30px,8vw,46px);font-weight:600;line-height:1.1;color:var(--green);font-variant-numeric:tabular-nums}
+.hero .per{font-size:13px;color:var(--muted);margin-top:4px}
+.hero .rng{font-size:14px;margin-top:8px}
+
+/* Lead form */
+.leadform{display:grid;gap:12px;margin-top:6px}
+.agreement{font-size:12px;color:var(--muted);line-height:1.45;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:12px 14px}
+.agreement strong{display:block;color:var(--fg);margin-bottom:4px}
+.agreement p{margin:0}
+.agreement a{color:var(--accent)}
+.consent{font-size:13px;color:var(--muted);line-height:1.45;font-weight:400;display:block}
+.consent input{width:auto;margin-right:6px;vertical-align:middle}
+.thanks{text-align:center;padding:16px 0}
+.thanks .check{width:56px;height:56px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;margin:0 auto 12px;font-size:28px;font-weight:700}
+footer{font-size:12px;color:var(--muted);display:grid;gap:8px}
+footer p{margin:0}
+</style>
+
+<div class="wrap">
+  <section class="card">
+    <p class="eyebrow">Free estimate · takes 30 seconds</p>
+    <h1>Discover how much guaranteed monthly income you could have for life</h1>
+    <p class="lead intro">Answer a few quick questions to see what a lifetime income annuity could pay you, based on current rates. No obligation.</p>
+
+    <form class="q" id="form" novalidate>
+      <div class="two">
+        <label>How old are you? <select id="age1"></select></label>
+        <label>What is your sex?
+          <select id="sex1"><option value="M">Male</option><option value="F">Female</option></select>
+        </label>
+      </div>
+
+      <label>Investment amount
+        <div class="money"><span>$</span><input id="amount" type="text" inputmode="numeric" placeholder="150,000" autocomplete="off"></div>
+      </label>
+      <p class="err" id="amountErr" hidden>Enter an amount of at least $10,000.</p>
+
+      <div class="two">
+        <label>Which state do you live in? <select id="state"></select></label>
+        <label>When should income start?
+          <select id="start">
+            <option value="0">Immediately</option>
+            <option value="1">In 1 year</option>
+            <option value="5">In 5 years</option>
+            <option value="10">In 10 years</option>
+            <option value="20">In 20 years</option>
+          </select>
+        </label>
+      </div>
+
+      <button class="cta" type="submit">Calculate</button>
+    </form>
+  </section>
+
+  <section class="card results" id="results" hidden aria-live="polite">
+    <p class="eyebrow">Your estimate</p>
+    <h2>Your savings could pay you</h2>
+    <div class="hero">
+      <div class="per">Estimated monthly income</div>
+      <div class="amt" id="heroRange">$0 – $0</div>
+      <div class="per">per month, for life · before taxes</div>
+    </div>
+    <div id="leadBlock">
+      <h2 style="font-size:22px">Get your personalized quote</h2>
+      <p class="lead">Rates change weekly. A licensed annuity specialist will send your exact quote within one business day — no pressure, no obligation.</p>
+      <form class="leadform" id="leadForm" novalidate>
+        <label>Full name <input id="lname" type="text" autocomplete="name" required></label>
+        <div class="two">
+          <label>Email <input id="lemail" type="email" autocomplete="email" required></label>
+          <label>Mobile phone <input id="lphone" type="tel" autocomplete="tel" required></label>
+        </div>
+        <label>ZIP code <input id="lzip" type="text" inputmode="numeric" autocomplete="postal-code" maxlength="5" required></label>
+        <p class="err" id="leadErr" hidden>Please fill in every field with a valid email and phone number.</p>
+        <div class="agreement">
+          <strong>Privacy &amp; Contact Agreement</strong>
+          <p>We value your privacy. You agree to our <a href="https://example.com/privacy-policy/">privacy policy</a> and <a href="https://example.com/disclaimer/">disclaimer</a> by submitting your contact information. After submitting, you will be contacted by Elevate SMG, and one or more of Elevate SMG’s trusted partners (including autodialed and prerecorded calls or text/SMS messages). Msg. and data rates apply. Your consent to text messaging is not required for a consultation and you may opt-out of text messages at any time by texting STOP.</p>
+        </div>
+        <button class="cta" type="submit">Get my personalized quote →</button>
+      </form>
+    </div>
+    <div class="thanks" id="thanks" hidden>
+      <div class="check">✓</div>
+      <h2 style="font-size:24px">You're all set</h2>
+      <p class="lead" id="thanksMsg"></p>
+      <button class="ghost" type="button" id="restart">Run another estimate</button>
+    </div>
+  </section>
+
+  <footer>
+    <p><strong>Estimates.</strong> Estimates are for informational purposes only and are not a quote or an offer. Results represent an average of nonqualified income annuities; the range shows the spread between insurers. Based on median immediate annuity quotes for a $100,000 nonqualified premium as of September 2026; actual payouts vary by insurer, state and prevailing rates. Monthly income is shown before taxes. Please seek the advice of a qualified professional before making financial decisions.</p>
+  </footer>
+</div>
+
+<script>
+// ---- Reference payouts per $100,000 premium (annuity.org, Sept. 2026) ----
+const REF = {
+  M:{60:{life:585,l10:572,l20:550},65:{life:637,l10:625,l20:588},70:{life:710,l10:682,l20:616},75:{life:832,l10:776,l20:639},80:{life:1005,l10:868,l20:649}},
+  F:{60:{life:561,l10:555,l20:542},65:{life:611,l10:602,l20:576},70:{life:672,l10:656,l20:605},75:{life:783,l10:739,l20:633},80:{life:933,l10:836,l20:646}}
+};
+const AGES=[60,65,70,75,80];
+const STATES=["Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming"];
+
+function interp(getter, age){
+  if(age<=60){ const r60=getter(60), r65=getter(65); const slope=(r65-r60)/5; return Math.max(r60*0.55, r60 + slope*0.55*(age-60)); }
+  if(age>=80){ const r75=getter(75), r80=getter(80); const slope=(r80-r75)/5; return r80 + slope*0.9*(age-80); }
+  for(let i=0;i<AGES.length-1;i++){ const a=AGES[i], b=AGES[i+1]; if(age>=a && age<=b){ const t=(age-a)/(b-a); return getter(a)+(getter(b)-getter(a))*t; } }
+  return getter(80);
+}
+const single=(sex,opt,age)=>interp(a=>REF[sex][a][opt],age);
+const parseAmount=v=>{ const n=Number(String(v).replace(/[^0-9.]/g,'')); return isFinite(n)&&n>0?n:0; };
+const fmt=n=>'$'+Math.round(n).toLocaleString('en-US');
+const fmt2=n=>'$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+
+const answers={amount:150000, age:65, sex:'M', state:'Florida', defer:0};
+
+function compute(){
+  const startAge=answers.age+answers.defer;
+  const growth=Math.pow(1.03, answers.defer);
+  const scale=answers.amount/100000;
+  const base={ life:single(answers.sex,'life',startAge), l10:single(answers.sex,'l10',startAge), l20:single(answers.sex,'l20',startAge) };
+  base.refund=base.l10*0.985;
+  const rows=[
+    {key:'life', name:'Life (no guarantee)', desc:'Paid for life. Nothing to beneficiaries.', min:m=>0},
+    {key:'l10', name:'Life with 10-year certain', desc:'For life; at least 120 payments guaranteed.', min:m=>m*120},
+    {key:'l20', name:'Life with 20-year certain', desc:'For life; at least 240 payments guaranteed.', min:m=>m*240},
+    {key:'refund', name:'Life with cash refund', desc:'For life; unpaid premium goes to your heirs.', min:m=>answers.amount},
+  ].map(r=>{ const monthly=base[r.key]*scale*growth; return {...r,monthly,low:monthly*0.80,high:monthly*1.10,minPayout:r.min(monthly)}; });
+  const best=rows.reduce((a,b)=>b.monthly>a.monthly?b:a);
+  return {rows,best,startAge};
+}
+
+function renderResults(){
+  const r=compute();
+  document.getElementById('heroRange').textContent=`${fmt(r.best.low)} – ${fmt(r.best.high)}`;
+}
+
+// ---- Inputs ----
+const amountEl=document.getElementById('amount');
+amountEl.addEventListener('blur',()=>{ const n=parseAmount(amountEl.value); if(n) amountEl.value=n.toLocaleString('en-US'); });
+
+const age1=document.getElementById('age1');
+for(let a=40;a<=85;a++){ const o=document.createElement('option'); o.value=a; o.textContent=a; age1.appendChild(o); }
+age1.value=65;
+
+const sexEl=document.getElementById('sex1');
+
+const state=document.getElementById('state');
+for(const s of STATES){ const o=document.createElement('option'); o.value=s; o.textContent=s; state.appendChild(o); }
+state.value='Florida';
+
+const startEl=document.getElementById('start');
+
+// Calculate
+document.getElementById('form').addEventListener('submit',e=>{
+  e.preventDefault();
+  const a=parseAmount(amountEl.value); const bad=a<10000;
+  document.getElementById('amountErr').hidden=!bad; if(bad){ amountEl.focus(); return; }
+  answers.amount=a; answers.age=+age1.value; answers.sex=sexEl.value; answers.state=state.value; answers.defer=+startEl.value;
+  renderResults();
+  const res=document.getElementById('results'); res.hidden=false;
+  res.scrollIntoView({behavior:'smooth',block:'start'});
+});
+
+// Lead form (handled on the page; connect to your CRM / pixel where marked)
+document.getElementById('leadForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  const name=lname.value.trim(), email=lemail.value.trim(), phone=lphone.value.replace(/\D/g,''), zip=lzip.value.trim();
+  const ok=name && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && phone.length>=10 && /^\d{5}$/.test(zip);
+  document.getElementById('leadErr').hidden=ok;
+  if(!ok) return;
+  const lead={name,email,phone,zip,...answers,estimate:Math.round(compute().best.monthly),ts:new Date().toISOString()};
+  // TODO: send `lead` to your CRM / webhook and fire your Meta Pixel "Lead" event here.
+  // Example: if (window.fbq) fbq('track','Lead',{value:lead.estimate,currency:'USD'});
+  document.getElementById('leadBlock').hidden=true;
+  const t=document.getElementById('thanks'); t.hidden=false;
+  document.getElementById('thanksMsg').textContent=`Thanks, ${name.split(' ')[0]}. A licensed specialist will reach out within one business day with quotes for your ${fmt(answers.amount)} estimate.`;
+  t.scrollIntoView({behavior:'smooth',block:'start'});
+});
+document.getElementById('restart').addEventListener('click',()=>{
+  document.getElementById('leadBlock').hidden=false; document.getElementById('thanks').hidden=true;
+  document.getElementById('leadForm').reset(); document.getElementById('results').hidden=true;
+  window.scrollTo({top:0,behavior:'smooth'});
+});
+</script>
