@@ -243,14 +243,30 @@ document.getElementById('leadForm').addEventListener('submit',e=>{
   const ok=name && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && phone.length>=10;
   document.getElementById('leadErr').hidden=ok;
   if(!ok) return;
-  const lead={name,email,phone,...answers,estimate:Math.round(compute().best.monthly),ts:new Date().toISOString()};
-  // TODO: send `lead` to your CRM / webhook and fire your Meta Pixel "Lead" event here.
-  // Example: if (window.fbq) fbq('track','Lead',{value:lead.estimate,currency:'USD'});
+  const r=compute();
+  const first=name.split(' ')[0], last=name.split(' ').slice(1).join(' ');
+  const utm={}; try{ new URLSearchParams(location.search).forEach((v,k)=>{ if(/^(utm_|fbclid|gclid)/.test(k)) utm[k]=v; }); }catch(e){}
+  const lead={
+    full_name:name, first_name:first, last_name:last, email, phone,
+    age:answers.age, sex:answers.sex==='M'?'Male':'Female', state:answers.state,
+    investment_amount:answers.amount, income_start_years:answers.defer,
+    estimate_low:Math.round(r.best.low), estimate_high:Math.round(r.best.high), estimate_avg:Math.round(r.best.monthly),
+    source:'annuity-estimator', page_url:location.href, submitted_at:new Date().toISOString(), ...utm
+  };
+  sendLead(lead);
+  if(window.fbq) try{ fbq('track','Lead',{value:lead.estimate_avg,currency:'USD'}); }catch(e){}
   document.getElementById('leadBlock').hidden=true;
   const t=document.getElementById('thanks'); t.hidden=false;
   document.getElementById('thanksMsg').textContent=`Thanks, ${name.split(' ')[0]}. A licensed specialist is calling you in the next few minutes with exact quotes for your ${fmt(answers.amount)} estimate. The call will come from a number you may not recognize — please pick up.`;
   t.scrollIntoView({behavior:'smooth',block:'start'});
 });
+const WEBHOOK='https://services.leadconnectorhq.com/hooks/029BO0GsMOyMQqdlzocp/webhook-trigger/d5c899d4-43b2-4649-b26e-aba540d6104c';
+function sendLead(lead){
+  const body=JSON.stringify(lead);
+  fetch(WEBHOOK,{method:'POST',headers:{'Content-Type':'application/json'},body,keepalive:true})
+    .catch(()=>fetch(WEBHOOK,{method:'POST',mode:'no-cors',body,keepalive:true}))
+    .catch(()=>{ try{ navigator.sendBeacon(WEBHOOK,new Blob([body],{type:'application/json'})); }catch(e){} });
+}
 document.getElementById('editAnswers').addEventListener('click',()=>{ document.getElementById('results').hidden=true; document.getElementById('intro').hidden=false; window.scrollTo({top:0,behavior:'smooth'}); });
 document.getElementById('restart').addEventListener('click',()=>{ document.getElementById('intro').hidden=false;
   document.getElementById('leadBlock').hidden=false; document.getElementById('thanks').hidden=true;
