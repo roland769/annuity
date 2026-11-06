@@ -9,4 +9,5 @@ Single-page lead-generation funnel for Facebook Ads: age, sex, investment amount
 
 1. Replace `Elevate SMG` and the two `example.com` links in the Privacy & Contact Agreement with your company name, privacy policy and disclaimer.
 2. Form submissions are POSTed as JSON to the GoHighLevel inbound webhook set in `WEBHOOK` (in `index.html`). Add your Meta Pixel snippet to the page; the `Lead` event fires automatically on submit when `fbq` is present.
-3. Host on your own domain with gzip/brotli; load the Meta Pixel `async`.
+3. After the quote form is sent, the page redirects to `/typ` (investment amount ≥ $250,000) or `/typ-nq` (below). Create both pages on the same domain.
+4. Host on your own domain with gzip/brotli; load the Meta Pixel `async`.

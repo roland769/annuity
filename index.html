@@ -290,6 +290,9 @@ document.getElementById('leadForm').addEventListener('submit',e=>{
   };
   sendLead(lead);
   if(window.fbq) try{ fbq('track','Lead',{value:lead.estimate_avg,currency:'USD'}); }catch(e){}
+  // Redirect: $250K and above → /typ (qualified), below → /typ-nq
+  const dest = answers.amount>=250000 ? '/typ' : '/typ-nq';
+  setTimeout(()=>{ location.href=dest; }, 400);
   document.getElementById('leadBlock').hidden=true;
   const t=document.getElementById('thanks'); t.hidden=false;
   document.getElementById('thanksMsg').textContent=`Thanks, ${name.split(' ')[0]}. A licensed specialist is calling you in the next few minutes with exact quotes for your ${fmt(answers.amount)} estimate. The call will come from a number you may not recognize — please pick up.`;
