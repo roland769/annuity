@@ -84,7 +84,7 @@ footer p{margin:0}
 <div class="wrap">
   <section class="card" id="intro">
     <h1>Discover how much guaranteed monthly income you could have for life</h1>
-    <p class="lead intro">Answer 4 quick questions to see what a lifetime income annuity could pay you, based on current rates.</p>
+    <p class="lead intro">Answer 5 quick questions to see what a lifetime income annuity could pay you, based on current rates.</p>
 
     <form class="q" id="form" novalidate>
       <label>How old are you? <select id="age1"></select></label>
@@ -105,6 +105,7 @@ footer p{margin:0}
           <option value="20">In 20 years</option>
         </select>
       </label>
+      <label>Which state do you live in? <select id="state" required></select></label>
       <button class="cta" type="submit">See My Monthly Income →</button>
       <p class="micro">Free · Takes 30 seconds · No obligation</p>
     </form>
@@ -125,10 +126,6 @@ footer p{margin:0}
         <label>Full name <input id="lname" type="text" autocomplete="name" required></label>
         <label>Mobile phone <input id="lphone" type="tel" autocomplete="tel" required></label>
         <label>Email <input id="lemail" type="email" autocomplete="email" required></label>
-        <div class="two cols">
-          <label>State <select id="state" required></select></label>
-          <label>ZIP code <input id="lzip" type="text" inputmode="numeric" autocomplete="postal-code" maxlength="5" required></label>
-        </div>
         <p class="err" id="leadErr" hidden>Please fill in every field, including a valid email and phone number.</p>
         <div class="agreement">
           <strong>Privacy &amp; Contact Agreement</strong>
@@ -214,12 +211,12 @@ const startEl=document.getElementById('start');
 // Calculate
 document.getElementById('form').addEventListener('submit',e=>{
   e.preventDefault();
-  const missing=[age1,sexEl,startEl].find(el=>!el.value);
+  const missing=[age1,sexEl,startEl,state].find(el=>!el.value);
   const a=parseAmount(amountEl.value); const bad=a<10000;
   const errEl=document.getElementById('amountErr');
   if(missing){ errEl.textContent='Please answer every question.'; errEl.hidden=false; missing.focus(); return; }
   errEl.textContent='Enter an amount of at least $10,000.'; errEl.hidden=!bad; if(bad){ amountEl.focus(); return; }
-  answers.amount=a; answers.age=+age1.value; answers.sex=sexEl.value; answers.defer=+startEl.value;
+  answers.amount=a; answers.age=+age1.value; answers.sex=sexEl.value; answers.defer=+startEl.value; answers.state=state.value;
   renderResults();
   document.getElementById('intro').hidden=true;
   const res=document.getElementById('results'); res.hidden=false;
@@ -230,12 +227,11 @@ document.getElementById('form').addEventListener('submit',e=>{
 // Lead form (handled on the page; connect to your CRM / pixel where marked)
 document.getElementById('leadForm').addEventListener('submit',e=>{
   e.preventDefault();
-  const name=lname.value.trim(), email=lemail.value.trim(), phone=lphone.value.replace(/\D/g,''), zip=lzip.value.trim();
-  answers.state=state.value;
-  const ok=name && state.value && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && phone.length>=10 && /^\d{5}$/.test(zip);
+  const name=lname.value.trim(), email=lemail.value.trim(), phone=lphone.value.replace(/\D/g,'');
+  const ok=name && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && phone.length>=10;
   document.getElementById('leadErr').hidden=ok;
   if(!ok) return;
-  const lead={name,email,phone,zip,...answers,estimate:Math.round(compute().best.monthly),ts:new Date().toISOString()};
+  const lead={name,email,phone,...answers,estimate:Math.round(compute().best.monthly),ts:new Date().toISOString()};
   // TODO: send `lead` to your CRM / webhook and fire your Meta Pixel "Lead" event here.
   // Example: if (window.fbq) fbq('track','Lead',{value:lead.estimate,currency:'USD'});
   document.getElementById('leadBlock').hidden=true;
