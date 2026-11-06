@@ -306,9 +306,10 @@ document.getElementById('leadForm').addEventListener('submit',e=>{
     source:'annuity-estimator', page_url:location.href, submitted_at:new Date().toISOString(), ...utm
   };
   sendLead(lead);
-  if(window.fbq) try{ fbq('track','Lead',{value:lead.estimate_avg,currency:'USD'}); }catch(e){}
-  // Redirect: $250K and above → /typ (qualified), below → /typ-nq
-  const dest = answers.amount>=250000 ? '/typ' : '/typ-nq';
+  // Qualified = $250K and above: fire the Meta "Lead" event and go to /typ; others go to /typ-nq
+  const qualified = answers.amount>=250000;
+  if(qualified && window.fbq) try{ fbq('track','Lead',{value:lead.estimate_avg,currency:'USD'}); }catch(e){}
+  const dest = qualified ? '/typ' : '/typ-nq';
   setTimeout(()=>{ location.href=dest; }, 400);
   document.getElementById('leadBlock').hidden=true;
   const t=document.getElementById('thanks'); t.hidden=false;
