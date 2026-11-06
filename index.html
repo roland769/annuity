@@ -28,37 +28,46 @@ body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:17px
 @media (min-width:1000px){.card{padding:36px 48px}}
 .eyebrow{text-align:center;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;margin:0 0 6px}
 h1,h2{font-family:var(--display);font-weight:600;line-height:1.15;margin:0 0 8px;text-wrap:balance}
-h1{font-size:clamp(34px,8.5vw,48px);margin:0 auto 12px;max-width:28ch;text-align:center}
+h1{font-size:clamp(30px,7.8vw,48px);margin:0 auto 10px;max-width:28ch;text-align:center}
+@media (min-width:600px){h1{margin-bottom:14px}}
 h2{font-size:clamp(22px,5vw,32px)}
 .lead{color:var(--muted);margin:0 auto 18px;font-size:19px;max-width:70ch;text-align:center}
 .lead.intro{display:none}
 @media (min-width:600px){.lead.intro{display:block}}
-form.q{display:grid;gap:16px;max-width:760px;margin:0 auto}
+form.q{display:grid;gap:12px;max-width:760px;margin:0 auto}
+@media (min-width:600px){form.q{gap:16px}}
 .q .err{grid-column:1/-1}
 .q .cta{grid-column:1/-1}
-label{display:grid;gap:7px;font-size:20px;font-weight:600;min-width:0;text-align:center}
+label{display:grid;gap:5px;font-size:19px;font-weight:600;min-width:0;text-align:center}
+@media (min-width:600px){label{gap:7px;font-size:20px}}
 label small{color:var(--muted);font-weight:400}
-.two{display:grid;grid-template-columns:1fr;gap:14px}
-select,input{text-align:center;font:inherit;font-size:22px;font-weight:400;color:var(--fg);background:#ffffff;border:2px solid #8a9499;border-radius:8px;padding:13px 14px;width:100%;min-height:58px}
+.two{display:grid;grid-template-columns:1fr;gap:12px}
+.two.cols{grid-template-columns:1fr 1fr}
+select,input{text-align:center;font:inherit;font-size:22px;font-weight:400;color:var(--fg);background:#ffffff;border:2px solid #8a9499;border-radius:8px;padding:11px 14px;width:100%;min-height:54px}
+@media (min-width:600px){select,input{min-height:58px}}
 select:focus,input:focus{outline:2px solid var(--accent);outline-offset:1px}
 .cta:focus-visible,.ghost:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .money{position:relative}
 .money span{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);font-weight:600}
 .money input{padding-left:30px;padding-right:30px;font-variant-numeric:tabular-nums;font-size:24px;font-weight:600}
-.cta{font:inherit;font-weight:700;background:var(--accent);color:var(--accent-ink);border:0;border-radius:8px;padding:18px 18px;width:100%;cursor:pointer;font-size:23px;margin-top:4px}
+.cta{font:inherit;font-weight:700;background:var(--accent);color:var(--accent-ink);border:0;border-radius:8px;padding:17px 18px;width:100%;cursor:pointer;font-size:22px;margin-top:2px;box-shadow:0 3px 0 #065b5d}
+.cta:hover{background:#0b8e90}
+.micro{margin:0;text-align:center;font-size:14px;color:var(--muted)}
+.center{text-align:center}
+#intro[hidden]{display:none}
 .ghost{font:inherit;background:none;border:0;color:var(--muted);cursor:pointer;padding:12px 6px;font-weight:600}
 .err{color:#b4302e;font-size:15px;margin:0;text-align:center}
 
 /* Results */
 #results[hidden]{display:none}
-.hero{background:var(--green-soft);border-radius:10px;padding:18px;text-align:center;margin:0 0 18px}
+.hero{background:var(--green-soft);border-radius:10px;padding:18px;text-align:center;margin:0 auto 22px;max-width:640px}
 .hero .amt{font-family:var(--display);font-size:clamp(34px,8vw,64px);font-weight:600;line-height:1.1;color:var(--green);font-variant-numeric:tabular-nums}
-.hero .per{font-size:13px;color:var(--muted);margin-top:4px}
+.hero .per{font-size:15px;color:var(--muted);margin-top:4px}
 .hero .rng{font-size:14px;margin-top:8px}
 
 /* Lead form */
-.leadform{display:grid;gap:12px;margin-top:6px;max-width:640px}
-.agreement{font-size:15px;color:var(--muted);line-height:1.45;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:12px 14px}
+.leadform{display:grid;gap:12px;margin:6px auto 0;max-width:640px}
+.agreement{font-size:13px;color:var(--muted);line-height:1.45;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:12px 14px}
 .agreement strong{display:block;color:var(--fg);margin-bottom:4px}
 .agreement p{margin:0}
 .agreement a{color:var(--accent)}
@@ -71,70 +80,65 @@ footer p{margin:0}
 </style>
 
 <div class="wrap">
-  <section class="card">
-    <p class="eyebrow">Free estimate · takes 30 seconds</p>
+  <section class="card" id="intro">
     <h1>Discover how much guaranteed monthly income you could have for life</h1>
-    <p class="lead intro">Answer a few quick questions to see what a lifetime income annuity could pay you, based on current rates. No obligation.</p>
+    <p class="lead intro">Answer 4 quick questions to see what a lifetime income annuity could pay you, based on current rates.</p>
 
     <form class="q" id="form" novalidate>
-      <div class="two">
-        <label>How old are you? <select id="age1"></select></label>
-        <label>What is your sex?
-          <select id="sex1"><option value="M">Male</option><option value="F">Female</option></select>
-        </label>
-      </div>
-
+      <label>How old are you? <select id="age1"></select></label>
+      <label>What is your sex?
+        <select id="sex1"><option value="M">Male</option><option value="F">Female</option></select>
+      </label>
       <label>Investment amount
         <div class="money"><span>$</span><input id="amount" type="text" inputmode="numeric" placeholder="150,000" autocomplete="off"></div>
       </label>
       <p class="err" id="amountErr" hidden>Enter an amount of at least $10,000.</p>
-
-      <div class="two">
-        <label>Which state do you live in? <select id="state"></select></label>
-        <label>When should income start?
-          <select id="start">
-            <option value="0">Immediately</option>
-            <option value="1">In 1 year</option>
-            <option value="5">In 5 years</option>
-            <option value="10">In 10 years</option>
-            <option value="20">In 20 years</option>
-          </select>
-        </label>
-      </div>
-
-      <button class="cta" type="submit">Calculate</button>
+      <label>When should income start?
+        <select id="start">
+          <option value="0">Immediately</option>
+          <option value="1">In 1 year</option>
+          <option value="5">In 5 years</option>
+          <option value="10">In 10 years</option>
+          <option value="20">In 20 years</option>
+        </select>
+      </label>
+      <button class="cta" type="submit">See My Monthly Income →</button>
+      <p class="micro">Free · Takes 30 seconds · No obligation</p>
     </form>
   </section>
 
   <section class="card results" id="results" hidden aria-live="polite">
     <p class="eyebrow">Your estimate</p>
-    <h2>Your savings could pay you</h2>
+    <h2 class="center">Your savings could pay you</h2>
     <div class="hero">
       <div class="per">Estimated monthly income</div>
       <div class="amt" id="heroRange">$0 – $0</div>
       <div class="per">per month, for life · before taxes</div>
     </div>
     <div id="leadBlock">
-      <h2 style="font-size:22px">Get your personalized quote</h2>
-      <p class="lead">Rates change weekly. A licensed annuity specialist will send your exact quote within one business day — no pressure, no obligation.</p>
+      <h2 class="center">Get your exact quote from a licensed specialist</h2>
+      <p class="lead">Rates change weekly. Tell us where to reach you and a specialist will call you within minutes with real quotes from A-rated insurers.</p>
       <form class="leadform" id="leadForm" novalidate>
         <label>Full name <input id="lname" type="text" autocomplete="name" required></label>
-        <div class="two">
-          <label>Email <input id="lemail" type="email" autocomplete="email" required></label>
-          <label>Mobile phone <input id="lphone" type="tel" autocomplete="tel" required></label>
+        <label>Mobile phone <input id="lphone" type="tel" autocomplete="tel" required></label>
+        <label>Email <input id="lemail" type="email" autocomplete="email" required></label>
+        <div class="two cols">
+          <label>State <select id="state"></select></label>
+          <label>ZIP code <input id="lzip" type="text" inputmode="numeric" autocomplete="postal-code" maxlength="5" required></label>
         </div>
-        <label>ZIP code <input id="lzip" type="text" inputmode="numeric" autocomplete="postal-code" maxlength="5" required></label>
         <p class="err" id="leadErr" hidden>Please fill in every field with a valid email and phone number.</p>
         <div class="agreement">
           <strong>Privacy &amp; Contact Agreement</strong>
           <p>We value your privacy. You agree to our <a href="https://example.com/privacy-policy/">privacy policy</a> and <a href="https://example.com/disclaimer/">disclaimer</a> by submitting your contact information. After submitting, you will be contacted by Elevate SMG, and one or more of Elevate SMG’s trusted partners (including autodialed and prerecorded calls or text/SMS messages). Msg. and data rates apply. Your consent to text messaging is not required for a consultation and you may opt-out of text messages at any time by texting STOP.</p>
         </div>
-        <button class="cta" type="submit">Get my personalized quote →</button>
+        <button class="cta" type="submit">Get My Exact Quote →</button>
+        <p class="micro">Free · No obligation · Your information stays private</p>
       </form>
+      <p class="center"><button class="ghost" type="button" id="editAnswers">← Edit my answers</button></p>
     </div>
     <div class="thanks" id="thanks" hidden>
       <div class="check">✓</div>
-      <h2 style="font-size:24px">You're all set</h2>
+      <h2 class="center">Keep your phone nearby</h2>
       <p class="lead" id="thanksMsg"></p>
       <button class="ghost" type="button" id="restart">Run another estimate</button>
     </div>
@@ -209,16 +213,19 @@ document.getElementById('form').addEventListener('submit',e=>{
   e.preventDefault();
   const a=parseAmount(amountEl.value); const bad=a<10000;
   document.getElementById('amountErr').hidden=!bad; if(bad){ amountEl.focus(); return; }
-  answers.amount=a; answers.age=+age1.value; answers.sex=sexEl.value; answers.state=state.value; answers.defer=+startEl.value;
+  answers.amount=a; answers.age=+age1.value; answers.sex=sexEl.value; answers.defer=+startEl.value;
   renderResults();
+  document.getElementById('intro').hidden=true;
   const res=document.getElementById('results'); res.hidden=false;
-  res.scrollIntoView({behavior:'smooth',block:'start'});
+  window.scrollTo({top:0,behavior:'smooth'});
+  document.getElementById('lname').focus({preventScroll:true});
 });
 
 // Lead form (handled on the page; connect to your CRM / pixel where marked)
 document.getElementById('leadForm').addEventListener('submit',e=>{
   e.preventDefault();
   const name=lname.value.trim(), email=lemail.value.trim(), phone=lphone.value.replace(/\D/g,''), zip=lzip.value.trim();
+  answers.state=state.value;
   const ok=name && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && phone.length>=10 && /^\d{5}$/.test(zip);
   document.getElementById('leadErr').hidden=ok;
   if(!ok) return;
@@ -227,10 +234,11 @@ document.getElementById('leadForm').addEventListener('submit',e=>{
   // Example: if (window.fbq) fbq('track','Lead',{value:lead.estimate,currency:'USD'});
   document.getElementById('leadBlock').hidden=true;
   const t=document.getElementById('thanks'); t.hidden=false;
-  document.getElementById('thanksMsg').textContent=`Thanks, ${name.split(' ')[0]}. A licensed specialist will reach out within one business day with quotes for your ${fmt(answers.amount)} estimate.`;
+  document.getElementById('thanksMsg').textContent=`Thanks, ${name.split(' ')[0]}. A licensed specialist is calling you in the next few minutes with exact quotes for your ${fmt(answers.amount)} estimate. The call will come from a number you may not recognize — please pick up.`;
   t.scrollIntoView({behavior:'smooth',block:'start'});
 });
-document.getElementById('restart').addEventListener('click',()=>{
+document.getElementById('editAnswers').addEventListener('click',()=>{ document.getElementById('results').hidden=true; document.getElementById('intro').hidden=false; window.scrollTo({top:0,behavior:'smooth'}); });
+document.getElementById('restart').addEventListener('click',()=>{ document.getElementById('intro').hidden=false;
   document.getElementById('leadBlock').hidden=false; document.getElementById('thanks').hidden=true;
   document.getElementById('leadForm').reset(); document.getElementById('results').hidden=true;
   window.scrollTo({top:0,behavior:'smooth'});
