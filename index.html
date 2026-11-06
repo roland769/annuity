@@ -62,6 +62,22 @@ select:focus,input:focus{outline:3px solid var(--accent);outline-offset:1px}
 .ghost{font:inherit;font-size:18px;background:none;border:0;color:var(--muted);cursor:pointer;padding:12px 6px;font-weight:600;text-decoration:underline}
 .err{color:#b4302e;font-size:19px;margin:0;text-align:left}
 
+/* Desktop: keep the whole estimator above the fold */
+@media (min-width:1000px){
+  body{padding-block:10px 40px;font-size:18px}
+  .card{padding:28px 48px}
+  .logo{height:36px;margin-bottom:12px}
+  h1{font-size:40px;margin-bottom:8px}
+  .lead.intro{font-size:20px;margin-bottom:16px}
+  form.q{grid-template-columns:1fr 1fr;gap:14px 24px;max-width:960px}
+  form.q label{font-size:24px;gap:6px}
+  form.q select,form.q input{font-size:24px;min-height:56px;padding:10px 16px}
+  form.q .money input{font-size:26px}
+  form.q .err{grid-column:1/-1}
+  form.q .cta{grid-column:1/-1;font-size:30px;padding:18px}
+  form.q .micro{grid-column:1/-1;font-size:16px}
+}
+
 /* Results */
 #results[hidden]{display:none}
 .hero{background:var(--green-soft);border-radius:10px;padding:18px;text-align:center;margin:0 auto 22px;max-width:640px}
