@@ -38,8 +38,8 @@ form.q{display:grid;gap:14px;max-width:820px;margin:0 auto}
 @media (min-width:600px){form.q{gap:20px}}
 .q .err{grid-column:1/-1}
 .q .cta{grid-column:1/-1}
-label{display:grid;gap:8px;font-size:25px;font-weight:600;min-width:0;text-align:left}
-@media (min-width:600px){label{gap:8px;font-size:28px}}
+label{display:grid;gap:10px;font-size:29px;font-weight:700;min-width:0;text-align:left;line-height:1.2}
+@media (min-width:600px){label{gap:10px;font-size:34px}}
 label small{color:var(--muted);font-weight:400}
 .two{display:grid;grid-template-columns:1fr;gap:12px}
 .two.cols{grid-template-columns:1fr 1fr}
@@ -88,15 +88,15 @@ footer p{margin:0}
     <form class="q" id="form" novalidate>
       <label>How old are you? <select id="age1"></select></label>
       <label>What is your sex?
-        <select id="sex1" required><option value="" selected disabled>Select</option><option value="M">Male</option><option value="F">Female</option></select>
+        <select id="sex1" required><option value="" selected disabled></option><option value="M">Male</option><option value="F">Female</option></select>
       </label>
       <label>Enter investment amount
-        <div class="money"><span>$</span><input id="amount" type="text" inputmode="numeric" placeholder="150,000" autocomplete="off"></div>
+        <div class="money"><span>$</span><input id="amount" type="text" inputmode="numeric" autocomplete="off"></div>
       </label>
       <p class="err" id="amountErr" hidden>Enter an amount of at least $10,000.</p>
       <label>When should income start?
         <select id="start" required>
-          <option value="" selected disabled>Select</option>
+          <option value="" selected disabled></option>
           <option value="0">Immediately</option>
           <option value="1">In 1 year</option>
           <option value="5">In 5 years</option>
@@ -199,14 +199,14 @@ const amountEl=document.getElementById('amount');
 amountEl.addEventListener('blur',()=>{ const n=parseAmount(amountEl.value); if(n) amountEl.value=n.toLocaleString('en-US'); });
 
 const age1=document.getElementById('age1');
-{ const o=document.createElement('option'); o.value=''; o.textContent='Select your age'; o.disabled=true; o.selected=true; age1.appendChild(o); }
+{ const o=document.createElement('option'); o.value=''; o.textContent=''; o.disabled=true; o.selected=true; age1.appendChild(o); }
 for(let a=40;a<=85;a++){ const o=document.createElement('option'); o.value=a; o.textContent=a; age1.appendChild(o); }
 
 const sexEl=document.getElementById('sex1');
 
 const state=document.getElementById('state');
 for(const s of STATES){ const o=document.createElement('option'); o.value=s; o.textContent=s; state.appendChild(o); }
-{ const o=document.createElement('option'); o.value=''; o.textContent='Select'; o.disabled=true; o.selected=true; state.insertBefore(o,state.firstChild); }
+{ const o=document.createElement('option'); o.value=''; o.textContent=''; o.disabled=true; o.selected=true; state.insertBefore(o,state.firstChild); }
 
 const startEl=document.getElementById('start');
 
