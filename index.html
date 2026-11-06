@@ -194,7 +194,16 @@ function renderResults(){
 
 // ---- Inputs ----
 const amountEl=document.getElementById('amount');
-amountEl.addEventListener('blur',()=>{ const n=parseAmount(amountEl.value); if(n) amountEl.value=n.toLocaleString('en-US'); });
+amountEl.addEventListener('input',()=>{
+  const digits=amountEl.value.replace(/\D/g,'');
+  if(!digits){ amountEl.value=''; return; }
+  const before=amountEl.value.slice(0,amountEl.selectionStart).replace(/\D/g,'').length; // digits left of the caret
+  const formatted=Number(digits).toLocaleString('en-US');
+  amountEl.value=formatted;
+  let pos=0, seen=0;
+  while(pos<formatted.length && seen<before){ if(/\d/.test(formatted[pos])) seen++; pos++; }
+  amountEl.setSelectionRange(pos,pos);
+});
 
 const age1=document.getElementById('age1');
 { const o=document.createElement('option'); o.value=''; o.textContent=''; o.disabled=true; o.selected=true; age1.appendChild(o); }
